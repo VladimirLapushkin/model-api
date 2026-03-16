@@ -38,7 +38,7 @@ def startup_event():
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "model_loaded": model is not None}
+    return {"status": "ok", "model_loaded succesful": model is not None}
 
 
 @app.post("/predict", response_model=PredictResponse)
