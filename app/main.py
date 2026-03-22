@@ -2,6 +2,7 @@ import os
 import logging
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.model import create_spark, load_model, predict_one
 from app.schemas import PredictRequest, PredictResponse
@@ -12,6 +13,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Fraud Detection API", version="1.0.0")
+
+Instrumentator().instrument(app).expose(app)
 
 spark = None
 model = None

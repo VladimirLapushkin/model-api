@@ -55,18 +55,31 @@ variable "yc_k8s_node_cores" {
 
 variable "yc_k8s_node_memory" {
   type    = number
+  default = 8
+}
+
+variable "yc_k8s_node_initial_count" {
+  type    = number
+  default = 2
+}
+
+variable "yc_k8s_node_min_count" {
+  type    = number
+  default = 2
+}
+
+variable "yc_k8s_node_max_count" {
+  type    = number
   default = 4
 }
+
 
 variable "yc_k8s_node_disk_size" {
   type    = number
   default = 30
 }
 
-variable "yc_k8s_node_count" {
-  type    = number
-  default = 2
-}
+
 
 variable "yc_ssh_public_key_path" {
   type = string

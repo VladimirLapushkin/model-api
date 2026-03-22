@@ -56,10 +56,13 @@ resource "yandex_kubernetes_node_group" "nodes" {
   }
 
   scale_policy {
-    fixed_scale {
-      size = var.node_count
+    auto_scale {
+      min     = var.node_min_count
+      max     = var.node_max_count
+      initial = var.node_initial_count
     }
   }
+
 
   allocation_policy {
     location {

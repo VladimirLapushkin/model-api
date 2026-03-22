@@ -29,6 +29,7 @@ module "iam_node" {
   ]
 }
 
+
 module "k8s" {
   source                  = "./modules/k8s"
   cluster_name            = var.yc_k8s_cluster_name
@@ -43,5 +44,7 @@ module "k8s" {
   node_cores              = var.yc_k8s_node_cores
   node_memory             = var.yc_k8s_node_memory
   node_disk_size          = var.yc_k8s_node_disk_size
-  node_count              = var.yc_k8s_node_count
+  node_initial_count      = var.yc_k8s_node_initial_count
+  node_min_count          = var.yc_k8s_node_min_count
+  node_max_count          = var.yc_k8s_node_max_count
 }

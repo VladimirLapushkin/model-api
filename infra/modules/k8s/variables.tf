@@ -46,7 +46,14 @@ variable "node_disk_size" {
   type = number
 }
 
-variable "node_count" {
+variable "node_initial_count" {
   type = number
 }
 
+variable "node_min_count" {
+  type = number
+}
+
+variable "node_max_count" {
+  type = number
+}
