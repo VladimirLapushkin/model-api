@@ -1,0 +1,37 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: fraud-api-alerts
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: fraud-api.rules
+      rules:
+        - alert: FraudApiMaxReplicasHighCpu
+          expr: |
+            (
+              kube_deployment_status_replicas_available{namespace="default", deployment="fraud-api"} >= 6
+            )
+            and
+            (
+              max by (namespace) (
+                (
+                  sum by (namespace, pod) (
+                    rate(container_cpu_usage_seconds_total{namespace="default", pod=~"fraud-api-.*", container="fraud-api"}[5m])
+                  )
+                  /
+                  sum by (namespace, pod) (
+                    kube_pod_container_resource_requests{namespace="default", pod=~"fraud-api-.*", container="fraud-api", resource="cpu", unit="core"}
+                  )
+                ) * 100
+              ) > 80
+            )
+          for: 5m
+          labels:
+            severity: warning
+            service: fraud-api
+          annotations:
+            summary: "fraud-api scaled to max replicas and CPU is high"
+            description: "Deployment fraud-api has 6 or more available replicas and at least one pod CPU usage is above 80% of requested CPU for 5 minutes."
