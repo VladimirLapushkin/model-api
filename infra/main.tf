@@ -48,3 +48,33 @@ module "k8s" {
   node_min_count          = var.yc_k8s_node_min_count
   node_max_count          = var.yc_k8s_node_max_count
 }
+
+# locals {
+#   yc_k8s_cluster_id = module.k8s.cluster_id
+# }
+
+
+resource "null_resource" "update_env" {
+  provisioner "local-exec" {
+    interpreter = ["/usr/bin/env", "bash", "-lc"]
+    command     = <<EOT
+      set -eu
+      ENV_FILE="../.env"
+      touch "$ENV_FILE"
+      
+      YC_K8S_CLUSTER_ID='${module.k8s.cluster_id}'
+      if grep -q "^YC_K8S_CLUSTER_ID=" "$ENV_FILE"; then
+        sed -i "s|^YC_K8S_CLUSTER_ID=.*|YC_K8S_CLUSTER_ID=$YC_K8S_CLUSTER_ID|" "$ENV_FILE"
+      else
+        echo "YC_K8S_CLUSTER_ID=$YC_K8S_CLUSTER_ID" >> "$ENV_FILE"
+      fi
+    EOT
+  }
+  triggers = {
+    cluster_id = module.k8s.cluster_id  # перезапустит только при изменении ID
+  }
+  depends_on = [
+    module.k8s,
+    module.network
+  ]
+}

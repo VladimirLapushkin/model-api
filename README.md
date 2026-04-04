@@ -40,19 +40,46 @@ curl -X POST "http://&lt;balancer EXTERNAL-IP&gt;/predict" -H "Content-Type: app
   }'
 
 
+1. ./model-api/infra
 
-![alt text](screen/copy_model.png)
-![alt text](screen/container_registry.png)
-![alt text](screen/github_action.png)
-![alt text](screen/k8s_yc.png)
-![alt text](screen/deploy.png)
-![alt text](screen/balancer.png)
-![alt text](screen/health.png)
-![alt text](screen/predict.png)
+  make apply    # разворачивает kubernates cluster
 
-add successful into code
+  make deploy_secrets   # update kubectl, лбновляет secrets .env, доставка secrets в github, k8sbalacer записывает в  terraform.tfvars airflow
 
-![alt text](screen/vscode.png)
-![alt text](screen/new_commit.png)
-![alt text](screen/new_health.png)
+2. Terraform monitoring
+  ./monitoring
+
+  make apply
+
+  make all
+
+  проброс портов:
+  
+  kubectl port-forward -n monitoring svc/kube-prometheus-stack-grafana 3000:80
+  
+  kubectl port-forward -n monitoring svc/prometheus-operated 9090:9090
+
+  Grafana - import dashboard ./monitoring/config/Model_API_Scaling.json
+
+  
+
+
+
+
+
+
+![alt text](screen/airflow_dag.jpeg)
+![alt text](api_deploy.jpeg)
+![alt text](screen/github_dags.jpeg)
+![alt text](screen/vscode_dags.jpeg)
+![alt text](screen/prometheus_rule.jpeg)
+![alt text](screen/kafka_1.jpeg)
+![alt text](screen/kafka_2.jpeg)
+![alt text](screen/Grafana_4pods.jpeg)
+![alt text](screen/Grafana_6pods.jpeg)
+![alt text](screen/Grafana_5pods.jpeg)
+![alt text](screen/telegram_alert_firing.jpeg)
+![alt text](screen/telegram_alert_resolved.jpeg)
+![alt text](screen/github_dags.jpeg)
+
 
